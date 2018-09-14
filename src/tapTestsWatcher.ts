@@ -43,8 +43,9 @@ export class TapTestsWatcher extends OutputWatcher {
 					this.yamlBlockBeingCaptured = false;
 					this.currentTestCount = 0;
 					this.expectedTestCount = undefined;
+					this.lastTestResult = undefined;
 
-					this.testStatesEmitter.fire(<TestRunStartedEvent>{ type: 'started', tests: [] });
+					this.testStatesEmitter.fire(<TestRunStartedEvent>{ type: 'started', tests: ["root"] });
 				}
 			}
 		} else if (this.capturing) {
@@ -103,6 +104,7 @@ export class TapTestsWatcher extends OutputWatcher {
 
 		var test = this.createTestIfDoesntExist(description);
 		this.lastTestResult = <TestEvent>{ type: 'test', test: test, state: state };
+		this.testStatesEmitter.fire(<TestEvent>{ type: 'test', test: test, state: "running"});
 		this.testStatesEmitter.fire(this.lastTestResult);
 	}
 
@@ -164,6 +166,8 @@ export class TapTestsWatcher extends OutputWatcher {
 					message: failure.message || ""
 				});
 			});
+
+			testEvent.test = test.id;
 
 			this.testStatesEmitter.fire(testEvent);
 		}
