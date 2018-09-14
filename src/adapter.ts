@@ -4,7 +4,7 @@ import { Log } from 'vscode-test-adapter-util';
 import { TerminalWatcher } from './terminalWatcher';
 import { TapTestsWatcher } from './tapTestsWatcher';
 
-export class ExampleAdapter implements TestAdapter {
+export class Adapter implements TestAdapter {
 	private capturers: { [id: number] : TerminalWatcher; } = {};
 	private disposables: { dispose(): void }[] = [];
 	private foundTests: TestSuiteInfo = { type: 'suite', id: 'root', label: 'UnitTest++', children: [] };
