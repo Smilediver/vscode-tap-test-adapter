@@ -51,17 +51,8 @@ export class TapTestsWatcher extends OutputWatcher {
 		} else if (this.capturing) {
 			if (this.yamlBlockBeingCaptured) {
 				var currentIndent = line.search(/\S|$/);
-				if (currentIndent < this.yamlBlockIndent || this.tapYamlEndTagRegex.test(line)) {
-					var text = this.yamlBlockData.join("\n");
-					try {
-						var value = yaml.safeLoad(text);
-					} catch (e) {
-					}
-					if (this.lastTestResult !== undefined)
-						this.updateTestYamlBlockStatus(this.lastTestResult, value);
-					this.yamlBlockBeingCaptured = false;
-					this.yamlBlockData = [];
-				}
+				if (currentIndent < this.yamlBlockIndent || this.tapYamlEndTagRegex.test(line))
+					this.completeYamlBlock();
 			}
 
 			if (line.startsWith("ok") || line.startsWith("not ok")) {
@@ -82,6 +73,7 @@ export class TapTestsWatcher extends OutputWatcher {
 			}
 
 			if (this.expectedTestCount && this.currentTestCount >= this.expectedTestCount) {
+				this.completeYamlBlock();
 				this.capturing = false;
 				this.testStatesEmitter.fire(<TestRunFinishedEvent>{ type: 'finished' });
 			}
@@ -89,7 +81,24 @@ export class TapTestsWatcher extends OutputWatcher {
 	}
 
 
-	parseTestResult(line: string) {
+	private completeYamlBlock() {
+		if (!this.yamlBlockBeingCaptured)
+			return;
+
+		var text = this.yamlBlockData.join("\n");
+		try {
+			var value = yaml.safeLoad(text);
+		}
+		catch (e) {
+		}
+		if (this.lastTestResult !== undefined)
+			this.updateTestYamlBlockStatus(this.lastTestResult, value);
+		this.yamlBlockBeingCaptured = false;
+		this.yamlBlockData = [];
+	}
+
+
+	private parseTestResult(line: string) {
 		var match = this.tapTestStatusRegex.exec(line);
 		if (!match)
 			return;
@@ -109,7 +118,7 @@ export class TapTestsWatcher extends OutputWatcher {
 	}
 
 
-	createTestIfDoesntExist(description: string): TestInfo {
+	private createTestIfDoesntExist(description: string): TestInfo {
 		var match = this.tapTestDescriptionRegex.exec(description);
 
 		var suiteName = "";
@@ -150,7 +159,7 @@ export class TapTestsWatcher extends OutputWatcher {
 	}
 
 
-	updateTestYamlBlockStatus(testEvent: TestEvent, yaml: any): void {
+	private updateTestYamlBlockStatus(testEvent: TestEvent, yaml: any): void {
 		var test = typeof testEvent.test === "string" ? this.createTestIfDoesntExist(testEvent.test) : testEvent.test;
 
 		test.file = yaml.file;
