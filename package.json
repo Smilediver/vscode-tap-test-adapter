@@ -1,0 +1,82 @@
+{
+  "name": "vscode-tap-test-adapter",
+  "displayName": "TAP Test Adapter",
+  "description": "Capture test results that support TAP protocol and display in the Sidebar of Visual Studio Code",
+  "icon": "img/icon.png",
+  "author": "Julius Trinkunas",
+  "publisher": "smilediver",
+  "version": "0.0.1",
+  "license": "MIT",
+  "homepage": "https://github.com/smilediver/vscode-tap-test-adapter",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smilediver/vscode-tap-test-adapter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/smilediver/vscode-tap-test-adapter/issues"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "test",
+    "testing",
+    "tap",
+    "anything",
+    "protocol",
+    "adapter"
+  ],
+  "main": "out/main.js",
+  "scripts": {
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "clean": "rimraf out *.vsix",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "rebuild": "npm run clean && npm run build",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "dependencies": {
+    "tslib": "^1.9.3",
+    "vscode-test-adapter-api": "^1.0.1",
+    "vscode-test-adapter-util": "^0.5.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^3.11.2",
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^8.10.25",
+    "tslint": "^5.8.0",
+    "typescript": "^3.0.3",
+    "vsce": "^1.47.0",
+    "vscode": "^1.1.21"
+  },
+  "engines": {
+    "vscode": "^1.27.0"
+  },
+  "enableProposedApi": true,
+  "extensionDependencies": [
+    "hbenl.vscode-test-explorer"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Example Test Explorer configuration",
+      "properties": {
+        "tapTestAdapter.logpanel": {
+          "description": "write diagnotic logs to an output panel",
+          "type": "boolean",
+          "default": "true",
+          "scope": "resource"
+        },
+        "tapTestAdapter.logfile": {
+          "description": "write diagnostic logs to the given file",
+          "type": "string",
+          "scope": "resource"
+        }
+      }
+    }
+  }
+}
