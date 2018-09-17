@@ -37,8 +37,10 @@ export class Adapter implements TestAdapter {
 	onDidOpenTerminal(terminal: vscode.Terminal) {
 		terminal.processId.then(pid => {
 			terminal.onDidWriteData(data => {
-				if (this.capturers[pid] === undefined)
+				if (this.capturers[pid] === undefined) {
 					this.capturers[pid] = new TerminalWatcher(new TapTestsWatcher(this.foundTests, this.testsEmitter, this.testStatesEmitter));
+					this.log.info("Watch terminal: '" + terminal.name + "'");
+				}
 
 				this.capturers[pid].onData(data);
 			});

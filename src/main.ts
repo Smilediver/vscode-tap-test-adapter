@@ -4,11 +4,10 @@ import { Log, TestAdapterRegistrar } from 'vscode-test-adapter-util';
 import { Adapter } from './adapter';
 
 export async function activate(context: vscode.ExtensionContext) {
-
 	const workspaceFolder = (vscode.workspace.workspaceFolders || [])[0];
-
-	const log = new Log('tapTestAdapter', workspaceFolder, 'Example Explorer Log');
+	const log = new Log('tapTestAdapter', workspaceFolder, 'TAP Test Adapter');
 	context.subscriptions.push(log);
+	log.info("Activating TAP Test Adapter");
 
 	const testExplorerExtension = vscode.extensions.getExtension<TestHub>(testExplorerExtensionId);
 	log.info(`Test Explorer ${testExplorerExtension ? '' : 'not '}found`);
