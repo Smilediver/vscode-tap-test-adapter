@@ -160,10 +160,13 @@ export class TapTestsWatcher extends OutputWatcher {
 
 
 	private updateTestYamlBlockStatus(testEvent: TestEvent, yaml: any): void {
+		if (yaml === undefined)
+			return;
+
 		var test = typeof testEvent.test === "string" ? this.createTestIfDoesntExist(testEvent.test) : testEvent.test;
 
-		test.file = yaml.file;
-		test.line = yaml.line - 1;
+		test.file = yaml.file || "";
+		test.line = (yaml.line || 0) - 1;
 
 		if (yaml.failures instanceof Array) {
 			yaml.failures.forEach((failure: any) => {
